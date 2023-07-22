@@ -4,11 +4,8 @@
 
 package com.darktech.cpel;
 
-import Logica.Equipo;
-import Logica.Operador;
-import Logica.TipoUsuario;
-import Logica.Usuario;
-import static modelo.SearchTypesDAO.*;
+
+import Logica.Prestamo;
 
 /**
  *
@@ -20,7 +17,7 @@ public class CPEL {
         System.out.println("\n******************************\n");
         System.out.println("Insertando un escritor en la tabla");
         
-        Operador operador = new Operador("9-157-0000", "Robin - 2", "Avila");
-        System.out.print(operador.list());
+        Prestamo p = new Prestamo(5, "2023-07-20", "2-2-2",1, "Cum-2");
+        System.out.print(p.update());
     }
 }
