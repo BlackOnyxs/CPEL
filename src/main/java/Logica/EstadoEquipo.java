@@ -123,9 +123,8 @@ public class EstadoEquipo {
 
     @Override
     public String toString() {
-        return "TipoUsuario{" + "idTipoUsuario=" + idEstado + ", descripcion=" + descripcion + '}';
+        return "EstadoEquipo{" + "idEstado=" + idEstado + ", descripcion=" + descripcion + '}';
     }
-
     
     
     
