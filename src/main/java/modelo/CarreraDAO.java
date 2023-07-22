@@ -40,14 +40,14 @@ public class CarreraDAO {
                 "' where idcarrera = "+ this.idCarrera+";";
     }
     
-    public String search( int filter, String value ) {
+    public String search( SearchTypes filter, String value ) {
         String sqlStatement =  "";
         
         switch( filter ) {
-            case 0:
+            case ID:
                 sqlStatement = "select * from carreras where idcarrera = "+value+";";
                break;
-            case 1:
+            case NAME:
                 sqlStatement = "select * from carreras where nombre_carrera like '"+value+"';";
                break;
             default:
