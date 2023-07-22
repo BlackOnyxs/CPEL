@@ -1,11 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package modelo;
 
-/**
- *
- * @author BlackOnyxs
- */
-public enum SearchTypes { NAME, LASTNAME, ID }
+
+
+public enum SearchTypes { ID, NAME, LASTNAME, CATEGORY, STATE, BOARD}
