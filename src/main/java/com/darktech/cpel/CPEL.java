@@ -5,8 +5,9 @@
 package com.darktech.cpel;
 
 import Logica.Equipo;
+import Logica.TipoUsuario;
 import Logica.Usuario;
-import static modelo.SearchTypes.*;
+import static modelo.SearchTypesDAO.*;
 
 /**
  *
@@ -17,7 +18,7 @@ public class CPEL {
     public static void main(String[] args) {
         System.out.println("\n******************************\n");
         System.out.println("Insertando un escritor en la tabla");
-        Equipo equipo = new Equipo(5);
-        System.out.println(equipo.search(CATEGORY, "4"));
+        TipoUsuario user = new TipoUsuario(4, "Conserge 2");
+        System.out.println(user.delete());
     }
 }

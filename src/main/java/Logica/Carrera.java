@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import modelo.CarreraDAO;
 import modelo.Conexion;
-import modelo.SearchTypes;
+import modelo.SearchTypesDAO;
 
 /**
  *
@@ -71,7 +71,7 @@ public class Carrera {
             return false;
         }
     }
-    public ArrayList<Carrera> search(SearchTypes st, String value) {
+    public ArrayList<Carrera> search(SearchTypesDAO st, String value) {
         ArrayList<Carrera> data = new ArrayList<>();
         
         Conexion myConnection = new Conexion();

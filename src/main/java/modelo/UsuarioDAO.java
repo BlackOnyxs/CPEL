@@ -53,7 +53,7 @@ public class UsuarioDAO {
                 + "idcarrera = "+this.idCarrera +", tipousuario = "+this.tipoUsuario +" where cedula = '"+ this.cedula+"';";
     }
     
-    public String search( SearchTypes filter, String value ) {
+    public String search( SearchTypesDAO filter, String value ) {
         String sqlStatement =  "";
         
         switch( filter ) {

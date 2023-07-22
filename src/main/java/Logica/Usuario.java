@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import modelo.Conexion;
-import modelo.SearchTypes;
+import modelo.SearchTypesDAO;
 import modelo.UsuarioDAO;
 
 /**
@@ -113,7 +113,7 @@ public class Usuario {
         UsuarioDAO user = new UsuarioDAO(this.cedula);
         return conn.executeUpdate(user.delete());
     }
-    public ArrayList<Usuario> search(SearchTypes st, String filter) {
+    public ArrayList<Usuario> search(SearchTypesDAO st, String filter) {
          ArrayList<Usuario> data = new ArrayList<>();
         Conexion conn = new Conexion();
         UsuarioDAO user = new UsuarioDAO();

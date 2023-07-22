@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import modelo.Conexion;
 import modelo.EquiposDAO;
-import modelo.SearchTypes;
+import modelo.SearchTypesDAO;
 import modelo.UsuarioDAO;
 
 /**
@@ -136,7 +136,7 @@ public class Equipo {
         return conn.executeUpdate(equipo.delete());
     }
    
-    public ArrayList<Equipo> search(SearchTypes st, String filter) {
+    public ArrayList<Equipo> search(SearchTypesDAO st, String filter) {
         ArrayList<Equipo> data = new ArrayList<>();
         Conexion conn = new Conexion();
         EquiposDAO equipo = new EquiposDAO();

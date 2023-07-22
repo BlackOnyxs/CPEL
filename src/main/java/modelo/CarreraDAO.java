@@ -40,7 +40,7 @@ public class CarreraDAO {
                 "' where idcarrera = "+ this.idCarrera+";";
     }
     
-    public String search( SearchTypes filter, String value ) {
+    public String search( SearchTypesDAO filter, String value ) {
         String sqlStatement =  "";
         
         switch( filter ) {

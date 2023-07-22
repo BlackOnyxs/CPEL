@@ -61,7 +61,7 @@ public class EquiposDAO {
                 + "placa_inventario = '"+this.placaInventario +"', fecha_compra = '"+this.fechaCompra +"', foto = '"+this.foto+"' where idequipo = '"+ this.idEquipo+"';";
     }
     
-    public String search( SearchTypes filter, String value ) {
+    public String search( SearchTypesDAO filter, String value ) {
         String sqlStatement =  "";
         
         switch( filter ) {
