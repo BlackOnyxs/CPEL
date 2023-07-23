@@ -18,6 +18,9 @@ public class TipoUsuario {
     private int idTipoUsuario;
     private String descripcion;
 
+    public TipoUsuario() {
+    }
+
     public TipoUsuario(int idTipoUsuario, String descripcion) {
         this.idTipoUsuario = idTipoUsuario;
         this.descripcion = descripcion;
@@ -32,21 +35,24 @@ public class TipoUsuario {
         this.descripcion = descripcion;
     }
 
-    public int getIdCarrera() {
+    public int getIdTipoUsuario() {
         return idTipoUsuario;
     }
 
-    public void setIdCarrera(int idTipoUsuario) {
+    public void setIdTipoUsuario(int idTipoUsuario) {
         this.idTipoUsuario = idTipoUsuario;
     }
 
-    public String getNombreCarrera() {
+    public String getDescripcion() {
         return descripcion;
     }
 
-    public void setNombreCarrera(String descripcion) {
+    public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    
+    
     
     public String insert(){
         Conexion conn = new Conexion();

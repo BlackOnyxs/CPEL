@@ -19,6 +19,11 @@ public class Carrera {
     private int idCarrera;
     private String nombreCarrera;
 
+    public Carrera() {
+    }
+    
+    
+
     public Carrera(int idCarrera, String nombreCarrera) {
         this.idCarrera = idCarrera;
         this.nombreCarrera = nombreCarrera;
@@ -106,7 +111,6 @@ public class Carrera {
         
         try {
             while ( rs.next() ) {
-                System.out.println("Si");
                 Carrera currentCarrer = new Carrera(rs.getInt("idCarrera"), rs.getString("nombre_carrera"));
                 data.add(currentCarrer);
             }

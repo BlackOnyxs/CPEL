@@ -21,18 +21,38 @@ public class Usuario {
     private String primerApellido;
     private String telefono;
     private String correo;
-    private int tipoUsuario;
+    private int idTipoUsuario;
     private int idCarrera;
+    private String careerName;
+    private String tipoUsuario;
 
-    public Usuario(String cedula, String primerNombre, String primerApellido, String telefono, String correo, int tipoUsuario, int idCarrera) {
+    public Usuario() {
+    }
+
+    public Usuario(String cedula, String primerNombre, String primerApellido, String telefono, String correo, int idTipoUsuario, int idCarrera) {
         this.cedula = cedula;
         this.primerNombre = primerNombre;
         this.primerApellido = primerApellido;
         this.telefono = telefono;
         this.correo = correo;
-        this.tipoUsuario = tipoUsuario;
+        this.idTipoUsuario = idTipoUsuario;
         this.idCarrera = idCarrera;
     }
+
+    public Usuario(String cedula, String primerNombre, String primerApellido, String telefono, String correo, int idTipoUsuario, int idCarrera, String careerName, String tipoUsuario) {
+        this.cedula = cedula;
+        this.primerNombre = primerNombre;
+        this.primerApellido = primerApellido;
+        this.telefono = telefono;
+        this.correo = correo;
+        this.idTipoUsuario = idTipoUsuario;
+        this.idCarrera = idCarrera;
+        this.careerName = careerName;
+        this.tipoUsuario = tipoUsuario;
+    }
+
+    
+    
 
     public Usuario(String cedula) {
         this.cedula = cedula;
@@ -78,13 +98,31 @@ public class Usuario {
         this.correo = correo;
     }
 
-    public int getTipoUsuario() {
+    public int getIdTipoUsuario() {
+        return idTipoUsuario;
+    }
+
+    public void setIdTipoUsuario(int idTipoUsuario) {
+        this.idTipoUsuario = idTipoUsuario;
+    }
+
+    public String getCareerName() {
+        return careerName;
+    }
+
+    public void setCareerName(String careerName) {
+        this.careerName = careerName;
+    }
+
+    public String getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(int tipoUsuario) {
+    public void setTipoUsuario(String tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
+
+    
 
     public int getIdCarrera() {
         return idCarrera;
@@ -94,27 +132,43 @@ public class Usuario {
         this.idCarrera = idCarrera;
     }
     
-     public String insert(){
+     public Usuario save(){
         Conexion conn = new Conexion();
         UsuarioDAO user = new UsuarioDAO(this.cedula,this.primerNombre, this.primerApellido,
-                            this.telefono, this.correo, this.tipoUsuario, this.idCarrera);
-        return conn.executeUpdate(user.insert());
+                            this.telefono, this.correo, this.idTipoUsuario, this.idCarrera);
+        
+        ResultSet rs = conn.executeQuery(user.save());
+        Usuario currentUser = null;
+        
+        try {
+            while ( rs.next() ) {
+                currentUser = new Usuario(rs.getString("cedula"), rs.getString("primer_nombre"), 
+                        rs.getString("primer_apellido"), rs.getString("telefono"), rs.getString("correo"),
+                         rs.getInt("tipousuario"), rs.getInt("idcarrera"), rs.getString("career_name"), 
+                        rs.getString("tipo_usuario"));
+            }
+        } catch (SQLException e) {
+//            Logger.getLogger(Writer.class.getName()).log(Level., null, e);
+            e.printStackTrace();
+        }
+        return currentUser;
     }
     
-    public String update(){
-        Conexion conn = new Conexion();
-        UsuarioDAO user = new UsuarioDAO(this.cedula,this.primerNombre, this.primerApellido,
-                            this.telefono, this.correo, this.tipoUsuario, this.idCarrera);
-        return conn.executeUpdate(user.update());
-    }
+//    public String update(){
+//        Conexion conn = new Conexion();
+//        UsuarioDAO user = new UsuarioDAO(this.cedula,this.primerNombre, this.primerApellido,
+//                            this.telefono, this.correo, this.idTipoUsuario, this.idCarrera);
+//        return conn.executeUpdate(user.update());
+//    }
     
     public String delete(){
         Conexion conn = new Conexion();
         UsuarioDAO user = new UsuarioDAO(this.cedula);
+        System.out.print(user);
         return conn.executeUpdate(user.delete());
     }
     public ArrayList<Usuario> search(SearchTypesDAO st, String filter) {
-         ArrayList<Usuario> data = new ArrayList<>();
+        ArrayList<Usuario> data = new ArrayList<>();
         Conexion conn = new Conexion();
         UsuarioDAO user = new UsuarioDAO();
         ResultSet rs = conn.executeQuery(user.search(st, filter));
@@ -123,7 +177,8 @@ public class Usuario {
             while ( rs.next() ) {
                 Usuario currentUser = new Usuario(rs.getString("cedula"), rs.getString("primer_nombre"), 
                         rs.getString("primer_apellido"), rs.getString("telefono"), rs.getString("correo"),
-                        rs.getInt("idcarrera"), rs.getInt("tipousuario"));
+                         rs.getInt("tipousuario"), rs.getInt("idcarrera"), rs.getString("career_name"), 
+                        rs.getString("tipo_usuario"));
                 data.add(currentUser);
             }
         } catch (SQLException e) {
@@ -133,20 +188,20 @@ public class Usuario {
         return data;
     }
     
-    public ArrayList<Usuario> list() {
+    public ArrayList<Usuario> list(int skip, int sort) {
         ArrayList<Usuario> data = new ArrayList<>();
         
         Conexion myConnection = new Conexion();
         UsuarioDAO userDao = new UsuarioDAO();
         
-        ResultSet rs = myConnection.executeQuery(userDao.list());
+        ResultSet rs = myConnection.executeQuery(userDao.list(skip, sort));
         
         try {
             while ( rs.next() ) {
-                System.out.println("Si");
                 Usuario currentUser = new Usuario(rs.getString("cedula"), rs.getString("primer_nombre"), 
                         rs.getString("primer_apellido"), rs.getString("telefono"), rs.getString("correo"),
-                        rs.getInt("idcarrera"), rs.getInt("tipousuario"));
+                         rs.getInt("tipousuario"), rs.getInt("idcarrera"), rs.getString("career_name"), 
+                        rs.getString("tipo_usuario"));
                 data.add(currentUser);
             }
         } catch (SQLException e) {
@@ -156,11 +211,13 @@ public class Usuario {
         return data;
     }
 
+    
 
     @Override
     public String toString() {
         return "Usuario{" + "cedula=" + cedula + ", primerNombre=" + primerNombre + ", primerApellido=" + primerApellido + ", telefono=" + telefono + ", correo=" + correo + ", tipoUsuario=" + tipoUsuario + ", idCarrera=" + idCarrera + '}';
     }
    
+    
     
 }
