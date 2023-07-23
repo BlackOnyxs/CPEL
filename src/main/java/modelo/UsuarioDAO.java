@@ -72,23 +72,8 @@ public class UsuarioDAO {
                 + "idcarrera = "+this.idCarrera +", tipousuario = "+this.idTipoUsuario +" where cedula = '"+ this.cedula+"';";
     }
     
-    public String search( SearchTypesDAO filter, String value ) {
-        String sqlStatement =  "";
-        
-        switch( filter ) {
-            case ID:
-                sqlStatement = "select * from usuarios where cedula like '"+value+"';";
-               break;
-            case NAME:
-                sqlStatement = "select * from usuarios where primer_nombre like '"+value+"';";
-               break;
-            case LASTNAME:
-                sqlStatement = "select * from usuarios where primer_apellido like '"+value+"';";
-               break;
-            default:
-                return "Not implement";
-        }
-        return sqlStatement;
+    public String search( String value ) {
+        return String.format("call UserSearch('%s')", value);
     }
     
      public String get() {

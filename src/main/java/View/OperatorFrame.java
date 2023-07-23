@@ -4,10 +4,7 @@
  */
 package View;
 
-import Logica.Carrera;
-import Logica.TipoUsuario;
-import Logica.Usuario;
-import java.awt.event.ItemEvent;
+import Logica.Operador;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,92 +13,46 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import modelo.SearchTypesDAO;
 import utils.FileUtils;
-import utils.TypeObject;
 
 /**
  *
  * @author BlackOnyxs
  */
-public class UsersFrame extends javax.swing.JInternalFrame {
+public class OperatorFrame extends javax.swing.JInternalFrame {
 
-    DefaultTableModel usersTableModel;
-    ArrayList<Usuario> users;
-    Usuario currentUser;
-    ArrayList<TipoUsuario> usersTypes;
-    Carrera currentCareer;
-    ArrayList<Carrera> careers;
-    
-    TipoUsuario curretUserType;
+    DefaultTableModel operatorTableModel;
+    ArrayList<Operador> operators;
+    Operador currentOperator;
+
     int currentPage = 0;
-    public UsersFrame() {
+    public OperatorFrame() {
         initComponents();
-        usersTableModel = new DefaultTableModel();
-        users = new ArrayList<>();
+        operatorTableModel = new DefaultTableModel();
+        operators = new ArrayList<>();
         
-        loadUsersTypes();
-        loadCarrerFromDB();
         loadFromDB( currentPage, 0);
     }
     
     
     public void loadFromDB(int skip, int sort) {
-        currentUser = new Usuario();
-        users = currentUser.list( skip, sort );
+        currentOperator = new Operador();
+        operators = currentOperator.list( skip, sort );
         displayUsers();
     }
     
-    public void loadUsersTypes() {
-        curretUserType = new TipoUsuario();
-        usersTypes = new ArrayList<>();
-        usersTypes = curretUserType.list();
-        
-        if ( !usersTypes.isEmpty() ) {
-            usersTypes.forEach( type -> {
-                typeSelect.addItem(type.getDescripcion());
-            });
-            
-            typeSelect.setSelectedIndex(0);
-            curretUserType = usersTypes.get(0);
-            
-            typeSelect.addItemListener((ItemEvent e) -> {
-                curretUserType.setDescripcion((String) typeSelect.getSelectedItem());
-            });
-            
-            
-        }
-    }
-    
-    public void loadCarrerFromDB() {
-        currentCareer = new Carrera();
-        careers = currentCareer.list();
-        
-         if ( !careers.isEmpty() ) {
-             careers.forEach( career -> {
-                 careerSelect.addItem(career.getNombreCarrera());
-             });
-             careerSelect.setSelectedIndex(0);
-             currentCareer = careers.get(0);
-             careerSelect.addItemListener( (ItemEvent e) -> {
-                 currentCareer.setNombreCarrera((String) careerSelect.getSelectedItem());
-             });
-             
-         }
-    }
     
     public void displayUsers() {
-        usersTableModel.setRowCount(0);
+        operatorTableModel.setRowCount(0);
         
-        usersTableModel = (DefaultTableModel) usersTable.getModel();
+        operatorTableModel = (DefaultTableModel) operatorsTable.getModel();
         
-        if ( !users.isEmpty() ) {
-            users.forEach( user -> {
-                Object[] rowData = { user.getCedula(), (user.getPrimerNombre() + " " + user.getPrimerApellido() ),
-                    user.getTelefono(), user.getCorreo(), user.getTipoUsuario(), user.getCareerName()};
-                usersTableModel.addRow(rowData);
+        if ( !operators.isEmpty() ) {
+            operators.forEach(operator -> {
+                Object[] rowData = { operator.getCedula(), (operator.getPrimerNombre() + " " + operator.getPrimerApellido() ) };
+                operatorTableModel.addRow(rowData);
             });
-            usersTable.setModel(usersTableModel);
+            operatorsTable.setModel(operatorTableModel);
         }
     }
     
@@ -117,8 +68,6 @@ public class UsersFrame extends javax.swing.JInternalFrame {
        String cipValue = CapitalizaFully(cipField.getText().trim());
        String nameValue = CapitalizaFully(nameField.getText().trim());
        String lastnameValue = CapitalizaFully(lastnameField.getText().trim());
-       String phoneValue = CapitalizaFully(phoneField.getText().trim());
-       String emailValue = CapitalizaFully(emailField.getText().trim());
         
         if( cipValue == null || cipValue.isEmpty() ) {
             JOptionPane.showMessageDialog(null, "El campo cédula es requerido", "Error", JOptionPane.WARNING_MESSAGE);
@@ -135,21 +84,10 @@ public class UsersFrame extends javax.swing.JInternalFrame {
             lastnameField.requestFocus();
             return formFields;
         }
-        if( phoneValue == null || phoneValue.isEmpty() ) {
-            JOptionPane.showMessageDialog(null, "El campo pais es requerido", "Error", JOptionPane.WARNING_MESSAGE);
-            phoneField.requestFocus();
-            return formFields;
-        }
-        if( emailValue == null || emailValue.isEmpty() ) {
-            JOptionPane.showMessageDialog(null, "El campo correo es requerido", "Error", JOptionPane.WARNING_MESSAGE);
-            emailField.requestFocus();
-            return formFields;
-        }
+        
         formFields.add(cipValue );
         formFields.add( nameValue );
         formFields.add( lastnameValue );
-        formFields.add( phoneValue );
-        formFields.add( emailValue );
         return formFields;
    }
       
@@ -157,37 +95,22 @@ public class UsersFrame extends javax.swing.JInternalFrame {
        cipField.setText("");
        nameField.setText("");
        lastnameField.setText("");
-       phoneField.setText("");
-       emailField.setText("");
    }
       
-   public void addUser() {
+   public void addOperator() {
        var formFields = validateFiels();
        
-       usersTypes.forEach( type -> {
-           if ( type.getDescripcion().equals(curretUserType.getDescripcion() )) {
-               System.out.print(type);
-               curretUserType.setIdTipoUsuario(type.getIdTipoUsuario());
-           }
-       });
-       careers.forEach( career -> {
-           if ( career.getNombreCarrera().equals(currentCareer.getNombreCarrera() )) {
-               System.out.print(career);
-               currentCareer.setIdCarrera(career.getIdCarrera());
-           }
-       });
-      
-       if ( formFields.isEmpty() ) return;
-       int index = users.indexOf(currentUser);
-       currentUser = new Usuario(formFields.get(0), formFields.get(1), formFields.get(2), 
-                   formFields.get(3), formFields.get(4), curretUserType.getIdTipoUsuario(), currentCareer.getIdCarrera());
        
-       Usuario newUser = currentUser.save();
+       if ( formFields.isEmpty() ) return;
+       int index = operators.indexOf(currentOperator);
+       currentOperator = new Operador( formFields.get(0), formFields.get(1), formFields.get(2) );
+       
+       Operador newUser = currentOperator.save();
        if ( newUser != null ) {
            if ( index < 0 ) {
-               users.add(newUser);
+               operators.add(newUser);
            } else {
-               users.set(index, newUser);
+               operators.set(index, newUser);
            }
            
            displayUsers();
@@ -209,21 +132,13 @@ public class UsersFrame extends javax.swing.JInternalFrame {
         nameField = new javax.swing.JTextField();
         CipLabel2 = new javax.swing.JLabel();
         lastnameField = new javax.swing.JTextField();
-        CipLabel3 = new javax.swing.JLabel();
-        phoneField = new javax.swing.JTextField();
-        CipLabel4 = new javax.swing.JLabel();
-        emailField = new javax.swing.JTextField();
-        typeSelect = new javax.swing.JComboBox<>();
-        CipLabel5 = new javax.swing.JLabel();
-        CipLabel6 = new javax.swing.JLabel();
-        careerSelect = new javax.swing.JComboBox<>();
         btnSave = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        usersTable = new javax.swing.JTable();
+        operatorsTable = new javax.swing.JTable();
         btnAsc = new javax.swing.JButton();
         btnDsc = new javax.swing.JButton();
         btnExport = new javax.swing.JButton();
@@ -240,18 +155,6 @@ public class UsersFrame extends javax.swing.JInternalFrame {
 
         CipLabel2.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
         CipLabel2.setText("Apellido");
-
-        CipLabel3.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        CipLabel3.setText("Teléfono");
-
-        CipLabel4.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        CipLabel4.setText("Correo");
-
-        CipLabel5.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        CipLabel5.setText("Tipo");
-
-        CipLabel6.setFont(new java.awt.Font("sansserif", 0, 14)); // NOI18N
-        CipLabel6.setText("Carrera");
 
         btnSave.setText("Guardar");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -300,27 +203,15 @@ public class UsersFrame extends javax.swing.JInternalFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(CipLabel3)
-                            .addComponent(CipLabel5))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(36, 36, 36)
+                                .addGap(98, 98, 98)
                                 .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(typeSelect, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(30, 30, 30)
-                                        .addComponent(CipLabel4))
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(189, 189, 189)
-                                        .addComponent(CipLabel2)))))
+                                .addGap(251, 251, 251)
+                                .addComponent(CipLabel2)))
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -329,21 +220,13 @@ public class UsersFrame extends javax.swing.JInternalFrame {
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(8, 8, 8)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lastnameField)
-                                    .addComponent(emailField)))))
+                                .addComponent(lastnameField))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(CipLabel6)
-                                .addGap(18, 18, 18)
-                                .addComponent(careerSelect, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(CipLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                        .addComponent(CipLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(173, 173, 173))
         );
         jPanel1Layout.setVerticalGroup(
@@ -359,43 +242,31 @@ public class UsersFrame extends javax.swing.JInternalFrame {
                     .addComponent(nameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(CipLabel2)
                     .addComponent(lastnameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(CipLabel3)
-                    .addComponent(phoneField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CipLabel4)
-                    .addComponent(emailField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(typeSelect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CipLabel5)
-                    .addComponent(careerSelect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CipLabel6))
-                .addGap(24, 24, 24)
+                .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Lista de Usuarios"));
 
-        usersTable.setModel(new javax.swing.table.DefaultTableModel(
+        operatorsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Cédula", "Nombre", "Teléfono", "Correo", "Tipo de Usuario", "Carrera"
+                "Cédula", "Nombre"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -406,12 +277,12 @@ public class UsersFrame extends javax.swing.JInternalFrame {
                 return canEdit [columnIndex];
             }
         });
-        usersTable.addMouseListener(new java.awt.event.MouseAdapter() {
+        operatorsTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                usersTableMouseClicked(evt);
+                operatorsTableMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(usersTable);
+        jScrollPane1.setViewportView(operatorsTable);
 
         btnAsc.setText("Ascendente");
         btnAsc.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -461,7 +332,10 @@ public class UsersFrame extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(47, 47, 47)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
                 .addComponent(btnAsc)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDsc)
@@ -472,23 +346,20 @@ public class UsersFrame extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnLoadFromDB)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 673, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btnImport, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                    .addComponent(btnImport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnExport, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnDsc, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAsc, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnLoadFromDB, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(16, Short.MAX_VALUE))
+                    .addComponent(btnLoadFromDB, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -514,44 +385,19 @@ public class UsersFrame extends javax.swing.JInternalFrame {
         this.dispose();
     }//GEN-LAST:event_jButton1MouseClicked
 
-    private void btnLoadFromDBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromDBActionPerformed
-       
-        
-    }//GEN-LAST:event_btnLoadFromDBActionPerformed
-
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        addUser();
+        addOperator();
     }//GEN-LAST:event_btnSaveActionPerformed
-
-    private void usersTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_usersTableMouseClicked
-        String cip = usersTable.getValueAt(usersTable.getSelectedRow(), 0).toString();
-        
-        currentUser = users.stream()
-                .filter(contact -> contact.getCedula().equals(cip))
-                .findAny()
-                .orElse(null);
-        
-        cipField.setText(cip);
-        nameField.setText(currentUser.getPrimerNombre());
-        lastnameField.setText(currentUser.getPrimerApellido());
-        phoneField.setText(currentUser.getTelefono());
-        emailField.setText(currentUser.getCorreo());
-        typeSelect.setSelectedItem(currentUser.getTipoUsuario());
-        careerSelect.setSelectedItem(currentUser.getCareerName());
-        
-        btnDelete.setEnabled(true);
-        
-    }//GEN-LAST:event_usersTableMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnDeleteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDeleteMouseClicked
-        String result = currentUser.delete();
+        String result = currentOperator.delete();
        if ( result.equals("executed.") ) {
-           users.removeIf( user -> {
-               return (user.getCedula() == null ? currentUser.getCedula() == null : user.getCedula().equals(currentUser.getCedula()));
+           operators.removeIf(user -> {
+               return (user.getCedula() == null ? currentOperator.getCedula() == null : user.getCedula().equals(currentOperator.getCedula()));
            });
            displayUsers();
            clearFields();
@@ -560,13 +406,24 @@ public class UsersFrame extends javax.swing.JInternalFrame {
        }
     }//GEN-LAST:event_btnDeleteMouseClicked
 
-    private void btnAscMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAscMouseClicked
-        loadFromDB( currentPage, 0);
-    }//GEN-LAST:event_btnAscMouseClicked
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        String searchValue = JOptionPane.showInputDialog("Ingrese el valor de busqueda");
+        ArrayList<Operador> operatorsFound = currentOperator.search(searchValue.trim());
+        if ( operatorsFound.isEmpty() ) {
+            JOptionPane.showMessageDialog(this, "No se escontraron usuarios.", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        operators = operatorsFound;
+        displayUsers();
+    }//GEN-LAST:event_jButton2MouseClicked
 
-    private void btnDscMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDscMouseClicked
-        loadFromDB( currentPage, 1);
-    }//GEN-LAST:event_btnDscMouseClicked
+    private void btnLoadFromDBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadFromDBActionPerformed
+
+    }//GEN-LAST:event_btnLoadFromDBActionPerformed
+
+    private void btnLoadFromDBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoadFromDBMouseClicked
+        loadFromDB(currentPage, 0);
+    }//GEN-LAST:event_btnLoadFromDBMouseClicked
 
     private void btnImportMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImportMouseEntered
         // TODO add your handling code here:
@@ -574,45 +431,50 @@ public class UsersFrame extends javax.swing.JInternalFrame {
 
     private void btnImportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImportMouseClicked
         try {
-            users = FileUtils.loadUsersFromFile(this);
+            operators = FileUtils.loadOperatorsFromFile(this);
             displayUsers();
         } catch (IOException ex) {
-            Logger.getLogger(UsersFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OperatorFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnImportMouseClicked
 
     private void btnExportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMouseClicked
         try {
-            FileUtils.saveUsersToFile(users, this);
+            FileUtils.saveOperatorsToFile(operators, this);
         } catch (IOException ex) {
-            Logger.getLogger(UsersFrame.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(OperatorFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnExportMouseClicked
 
-    private void btnLoadFromDBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoadFromDBMouseClicked
-        loadFromDB(currentPage, 0);
-    }//GEN-LAST:event_btnLoadFromDBMouseClicked
+    private void btnDscMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDscMouseClicked
+        loadFromDB( currentPage, 1);
+    }//GEN-LAST:event_btnDscMouseClicked
 
-    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        String searchValue = JOptionPane.showInputDialog("Ingrese el valor de busqueda");
-        ArrayList<Usuario> usersFound = currentUser.search(searchValue.trim());
-        if ( usersFound.isEmpty() ) {
-            JOptionPane.showMessageDialog(this, "No se escontraron usuarios.", "Error", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        users = usersFound;
-        displayUsers();
-    }//GEN-LAST:event_jButton2MouseClicked
+    private void btnAscMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAscMouseClicked
+        loadFromDB( currentPage, 0);
+    }//GEN-LAST:event_btnAscMouseClicked
+
+    private void operatorsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_operatorsTableMouseClicked
+        String cip = operatorsTable.getValueAt(operatorsTable.getSelectedRow(), 0).toString();
+
+        currentOperator = operators.stream()
+        .filter(contact -> contact.getCedula().equals(cip))
+        .findAny()
+        .orElse(null);
+
+        cipField.setText(cip);
+        nameField.setText(currentOperator.getPrimerNombre());
+        lastnameField.setText(currentOperator.getPrimerApellido());
+
+        btnDelete.setEnabled(true);
+
+    }//GEN-LAST:event_operatorsTableMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel CipLabel;
     private javax.swing.JLabel CipLabel1;
     private javax.swing.JLabel CipLabel2;
-    private javax.swing.JLabel CipLabel3;
-    private javax.swing.JLabel CipLabel4;
-    private javax.swing.JLabel CipLabel5;
-    private javax.swing.JLabel CipLabel6;
     private javax.swing.JButton btnAsc;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnDsc;
@@ -620,9 +482,7 @@ public class UsersFrame extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnImport;
     private javax.swing.JButton btnLoadFromDB;
     private javax.swing.JButton btnSave;
-    private javax.swing.JComboBox<String> careerSelect;
     private javax.swing.JTextField cipField;
-    private javax.swing.JTextField emailField;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
@@ -630,8 +490,6 @@ public class UsersFrame extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField lastnameField;
     private javax.swing.JTextField nameField;
-    private javax.swing.JTextField phoneField;
-    private javax.swing.JComboBox<String> typeSelect;
-    private javax.swing.JTable usersTable;
+    private javax.swing.JTable operatorsTable;
     // End of variables declaration//GEN-END:variables
 }

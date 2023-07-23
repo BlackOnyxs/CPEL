@@ -59,30 +59,46 @@ public class Operador {
         this.primerApellido = primerApellido;
     }
 
-    
-    
-     public String insert(){
+    public Operador save() {
         Conexion conn = new Conexion();
-        OperadorDAO user = new OperadorDAO(this.cedula,this.primerNombre, this.primerApellido);
-        return conn.executeUpdate(user.insert());
+        OperadorDAO operator = new OperadorDAO(this.cedula,this.primerNombre, this.primerApellido);
+        ResultSet rs = conn.executeQuery(operator.save());
+        Operador currentOperator = null;
+        
+        try {
+            while ( rs.next() ) {
+                currentOperator = new Operador(rs.getString("cedula"), rs.getString("primer_nombre"), 
+                        rs.getString("primer_apellido"));
+            }
+        } catch (SQLException e) {
+//            Logger.getLogger(Writer.class.getName()).log(Level., null, e);
+            e.printStackTrace();
+        }
+        return currentOperator;
     }
     
-    public String update(){
-        Conexion conn = new Conexion();
-        OperadorDAO user = new OperadorDAO(this.cedula,this.primerNombre, this.primerApellido);
-        return conn.executeUpdate(user.update());
-    }
+//     public String insert(){
+//        Conexion conn = new Conexion();
+//        OperadorDAO user = new OperadorDAO(this.cedula,this.primerNombre, this.primerApellido);
+//        return conn.executeUpdate(user.insert());
+//    }
+//    
+//    public String update(){
+//        Conexion conn = new Conexion();
+//        OperadorDAO user = new OperadorDAO(this.cedula,this.primerNombre, this.primerApellido);
+//        return conn.executeUpdate(user.update());
+//    }
     
     public String delete(){
         Conexion conn = new Conexion();
         OperadorDAO user = new OperadorDAO(this.cedula);
         return conn.executeUpdate(user.delete());
     }
-    public ArrayList<Operador> search(SearchTypesDAO st, String filter) {
+    public ArrayList<Operador> search(String filter) {
          ArrayList<Operador> data = new ArrayList<>();
         Conexion conn = new Conexion();
         OperadorDAO user = new OperadorDAO();
-        ResultSet rs = conn.executeQuery(user.search(st, filter));
+        ResultSet rs = conn.executeQuery(user.search( filter ) );
         
         try {
             while ( rs.next() ) {
@@ -97,13 +113,13 @@ public class Operador {
         return data;
     }
     
-    public ArrayList<Operador> list() {
+    public ArrayList<Operador> list(int skip, int sort) {
         ArrayList<Operador> data = new ArrayList<>();
         
         Conexion myConnection = new Conexion();
-        OperadorDAO userDao = new OperadorDAO();
+        OperadorDAO operatorDao = new OperadorDAO();
         
-        ResultSet rs = myConnection.executeQuery(userDao.list());
+        ResultSet rs = myConnection.executeQuery(operatorDao.list( skip, sort ));
         
         try {
             while ( rs.next() ) {

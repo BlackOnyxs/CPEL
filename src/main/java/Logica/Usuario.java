@@ -167,11 +167,11 @@ public class Usuario {
         System.out.print(user);
         return conn.executeUpdate(user.delete());
     }
-    public ArrayList<Usuario> search(SearchTypesDAO st, String filter) {
+    public ArrayList<Usuario> search(String filter) {
         ArrayList<Usuario> data = new ArrayList<>();
         Conexion conn = new Conexion();
         UsuarioDAO user = new UsuarioDAO();
-        ResultSet rs = conn.executeQuery(user.search(st, filter));
+        ResultSet rs = conn.executeQuery(user.search(filter));
         
         try {
             while ( rs.next() ) {
