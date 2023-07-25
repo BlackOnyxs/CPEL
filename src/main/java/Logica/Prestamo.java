@@ -266,6 +266,31 @@ public class Prestamo {
         }
         return data;
     }
+     public ArrayList<Prestamo> search(String value ) {
+        ArrayList<Prestamo> data = new ArrayList<>();
+        
+        Conexion myConnection = new Conexion();
+        PrestamoDAO prestamoDAO = new PrestamoDAO();
+        
+        ResultSet rs = myConnection.executeQuery(prestamoDAO.search(value));
+        
+        try {
+            while ( rs.next() ) {
+                Prestamo currentPrestamo = new Prestamo(rs.getInt("idprestamo"), rs.getString("fecha_solicitud"), 
+                        rs.getInt("idequipo"), rs.getString("modelo"), rs.getString("cedula_usuario"),
+                        rs.getString("Solicitante"), rs.getString("cedula_operador_prestamo"),
+                        rs.getString("OperadorS"), rs.getString("fecha_devolucion"),
+                        rs.getString("cedula_operador_devolucion"), rs.getString("OperadorD"), 
+                        rs.getInt("idestado_devolucion"), rs.getString("estado_devolucion"),
+                        rs.getString("observacion"));
+                data.add(currentPrestamo);
+            }
+        } catch (SQLException e) {
+//            Logger.getLogger(Writer.class.getName()).log(Level., null, e);
+            e.printStackTrace();
+        }
+        return data;
+    }
 
     @Override
     public String toString() {

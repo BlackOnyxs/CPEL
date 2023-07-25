@@ -7,6 +7,7 @@ package utils;
 import Logica.Carrera;
 import Logica.Equipo;
 import Logica.Operador;
+import Logica.Prestamo;
 import Logica.Usuario;
 import java.awt.Component;
 import java.io.BufferedReader;
@@ -241,6 +242,68 @@ public class FileUtils {
                 for (Carrera career : careers) {
                     String line = career.getIdCarrera()+ "," + career.getNombreCarrera();
                     bw.write(line);
+                    bw.newLine();
+                }
+                bw.close();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                throw ex;
+            }
+        }
+    }
+    
+     public static ArrayList<Prestamo> loadLoansFromFile(Component component) throws IOException {
+        ArrayList<Prestamo> loans = new ArrayList<>();
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos CSV", "csv");
+        fileChooser.setFileFilter(filter);
+
+        int result = fileChooser.showOpenDialog(component);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] data = line.split(",");
+                    if (data.length == 7) {
+                        String id = data[0];
+                        String primer_nombre = data[1];
+                        String primer_apellido = data[2];
+                        String telefono = data[3];
+                        String correo = data[4];
+                        String tipousuario = data[5];
+                        String idcarrera = data[6];
+//                        Prestamo newObject = new Prestamo(id, primer_nombre, primer_apellido, telefono, correo, Integer.parseInt(tipousuario), Integer.parseInt(idcarrera));
+//                        loans.add(newObject);
+                    }
+
+                }
+                br.close();
+            } catch (IOException ex) {
+                throw ex;
+            }
+        }
+        return loans;
+    }
+
+    public static void saveLoansToFile(ArrayList<Prestamo> loans, Component component) throws IOException {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos CSV", "csv");
+        fileChooser.setFileFilter(filter);
+
+        int result = fileChooser.showSaveDialog(component);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                for (Prestamo user : loans) {
+////                    String line = user.getCedula() + "," + user.getPrimerNombre() + ","
+////                            + user.getPrimerNombre() + "," + user.getTelefono() + ","
+////                            + user.getCorreo() + "," + user.getIdTipoUsuario() + ","
+////                            + user.getIdCarrera();
+//                    bw.write(line);
                     bw.newLine();
                 }
                 bw.close();

@@ -632,20 +632,20 @@ public class LoansFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnImportMouseEntered
 
     private void btnImportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImportMouseClicked
-//        try {
-//            loans = FileUtils.loadUsersFromFile(this);
-//            displayLoans();
-//        } catch (IOException ex) {
-//            Logger.getLogger(LoansFrame.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            loans = FileUtils.loadLoansFromFile(this);
+            displayLoans();
+        } catch (IOException ex) {
+            Logger.getLogger(LoansFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnImportMouseClicked
 
     private void btnExportMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnExportMouseClicked
-//        try {
-//            FileUtils.saveUsersToFile(loans, this);
-//        } catch (IOException ex) {
-//            Logger.getLogger(LoansFrame.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        try {
+            FileUtils.saveLoansToFile(loans, this);
+        } catch (IOException ex) {
+            Logger.getLogger(LoansFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnExportMouseClicked
 
     private void btnLoadFromDBMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnLoadFromDBMouseClicked
@@ -653,14 +653,14 @@ public class LoansFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnLoadFromDBMouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-//        String searchValue = JOptionPane.showInputDialog("Ingrese el valor de busqueda");
-//        ArrayList<Usuario> usersFound = currentLoan.search(searchValue.trim());
-//        if (usersFound.isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "No se escontraron usuarios.", "Error", JOptionPane.WARNING_MESSAGE);
-//            return;
-//        }
-//        loans = usersFound;
-//        displayLoans();
+        String searchValue = JOptionPane.showInputDialog("Ingrese el valor de busqueda");
+        ArrayList<Prestamo> loansFound = currentLoan.search(searchValue.trim());
+        if (loansFound.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No se escontraron prestamos.", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        loans = loansFound;
+        displayLoans();
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void loadReturnedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadReturnedActionPerformed
