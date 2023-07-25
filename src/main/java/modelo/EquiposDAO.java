@@ -50,37 +50,24 @@ public class EquiposDAO {
         this.idEquipo = idEquipo;
     }
     
-    public String insert() {
-        return "insert into equipos(idequipo, idcategoria, descripcion, "
-                + "idestado_equipo, modelo, placa_inventario, fecha_compra, foto)values(null, "+this.idCategoria+", '"+this.descripcion+"', "+this.idEstado+", '"+this.modelo+"', '"+this.placaInventario+"', '"+this.fechaCompra+"', '"+this.foto+"');";
+    public String save() {
+        return String.format("call EquipmentCreateOrUpdate(%d, %d, '%s', %d, '%s', '%s', '%s', '%s')", 
+                this.idEquipo, this.idCategoria, this.descripcion, this.idEstado, this.modelo, this.placaInventario, this.fechaCompra, this.foto);
     }
     
-    public String update() {
-        return "UPDATE equipos set idcategoria = "+ this.idCategoria+", descripcion = '"
-                + this.descripcion+"', idestado_equipo = "+this.idEstado+", modelo = '"+this.modelo+"', "
-                + "placa_inventario = '"+this.placaInventario +"', fecha_compra = '"+this.fechaCompra +"', foto = '"+this.foto+"' where idequipo = '"+ this.idEquipo+"';";
-    }
+//    public String insert() {
+//        return "insert into equipos(idequipo, idcategoria, descripcion, "
+//                + "idestado_equipo, modelo, placa_inventario, fecha_compra, foto)values(null, "+this.idCategoria+", '"+this.descripcion+"', "+this.idEstado+", '"+this.modelo+"', '"+this.placaInventario+"', '"+this.fechaCompra+"', '"+this.foto+"');";
+//    }
+//    
+//    public String update() {
+//        return "UPDATE equipos set idcategoria = "+ this.idCategoria+", descripcion = '"
+//                + this.descripcion+"', idestado_equipo = "+this.idEstado+", modelo = '"+this.modelo+"', "
+//                + "placa_inventario = '"+this.placaInventario +"', fecha_compra = '"+this.fechaCompra +"', foto = '"+this.foto+"' where idequipo = '"+ this.idEquipo+"';";
+//    }
     
-    public String search( SearchTypesDAO filter, String value ) {
-        String sqlStatement =  "";
-        
-        switch( filter ) {
-            case ID:
-                sqlStatement = "select * from equipos where idequipo = "+value+";";
-               break;
-            case CATEGORY:
-                sqlStatement = "select * from equipos where idcategoria = "+value+";";
-               break;
-            case STATE:
-                sqlStatement = "select * from equipos where idestado_equipo = "+value+";";
-               break;
-            case BOARD:
-                sqlStatement = "select * from equipos where placa_inventario like '"+value+"';";
-               break;
-            default:
-                return "Not implement";
-        }
-        return sqlStatement;
+    public String search(String value ) {
+        return String.format("call EquipmentSearch('%s')", value);
     }
     
      public String get() {
@@ -91,7 +78,7 @@ public class EquiposDAO {
         return "DELETE FROM equipos WHERE idequipo = "+ this.idEquipo+";";
     }
     
-    public String list() {
-        return "SELECT * FROM equipos";
+    public String list(int skip, int sort ) {
+        return String.format( (sort == 0 ? "call EquipmentListASC(%d)" : "call EquipmentListDESC(%d)"), skip);
     }
 }

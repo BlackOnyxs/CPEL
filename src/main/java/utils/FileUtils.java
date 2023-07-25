@@ -4,6 +4,7 @@
  */
 package utils;
 
+import Logica.Equipo;
 import Logica.Operador;
 import Logica.Usuario;
 import java.awt.Component;
@@ -140,4 +141,60 @@ public class FileUtils {
             }
         }
     }
+   public static ArrayList<Equipo> loadEquipmentsFromFile(Component component) throws IOException {
+        ArrayList<Equipo> equipments = new ArrayList<>();
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos CSV", "csv");
+        fileChooser.setFileFilter(filter);
+
+        int result = fileChooser.showOpenDialog(component);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] data = line.split(",");
+                    if (data.length == 4) {
+                        String id = data[0];
+                        String descripcion = data[1];
+                        String placa = data[2];
+                        String fecha = data[3];                        
+                        Equipo newObject = new Equipo( Integer.parseInt(id), descripcion, placa, fecha);
+                        equipments.add(newObject);
+                    }
+                }
+                br.close();
+            } catch (IOException ex) {
+                throw ex;
+            }
+        }
+        return equipments;
+    }
+
+    public static void saveEquipmentsToFile(ArrayList<Equipo> equipments, Component component) throws IOException {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos CSV", "csv");
+        fileChooser.setFileFilter(filter);
+
+        int result = fileChooser.showSaveDialog(component);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                for (Equipo equipment : equipments) {
+                    String line = String.valueOf(equipment.getIdEquipo())+ "," + equipment.getDescripcion() + ","
+                            + equipment.getPlacaInventario()+ "," + equipment.getFechaCompra();
+                    bw.write(line);
+                    bw.newLine();
+                }
+                bw.close();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                throw ex;
+            }
+        }
+    }
+    
 }

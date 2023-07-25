@@ -41,19 +41,19 @@ public class CategoriaEquiposDAO {
     
     
     public String getById() {
-        return "SELECT * FROM tipos_usuarios where idcategoria = "+this.idCategory+";";
+        return "SELECT * FROM categoria_equipos where idcategoria = "+this.idCategory+";";
     }
     
     //TODO: handle spaces
     public String getByDescription() {
-        return "select * from tipos_usuarios where nombre_categoria like '"+this.nombreCategoria+"';";
+        return "select * from categoria_equipos where nombre_categoria like '"+this.nombreCategoria+"';";
     }
     
     public String delete() {
-        return "DELETE FROM tipos_usuarios WHERE idcategoria = "+ this.idCategory+";";
+        return "DELETE FROM categoria_equipos WHERE idcategoria = "+ this.idCategory+";";
     }
     
     public String list() {
-        return "SELECT * FROM tipos_usuarios";
+        return "SELECT * FROM categoria_equipos order by idcategoria asc limit 10";
     }
 }

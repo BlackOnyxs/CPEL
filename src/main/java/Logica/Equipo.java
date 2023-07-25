@@ -19,12 +19,30 @@ import modelo.UsuarioDAO;
 public class Equipo {
      private int idEquipo;
     private int idCategoria;
+    private String nombreCategoria;
     private String descripcion;
     private int idEstado;
+    private String estadoDescripcion;
     private String modelo;
     private String placaInventario;
     private String fechaCompra;
     private String foto;
+
+    public Equipo() {
+    }
+
+    public Equipo(int idEquipo, int idCategoria, String nombreCategoria, String descripcion, int idEstado, String estadoDescripcion, String modelo, String placaInventario, String fechaCompra, String foto) {
+        this.idEquipo = idEquipo;
+        this.idCategoria = idCategoria;
+        this.nombreCategoria = nombreCategoria;
+        this.descripcion = descripcion;
+        this.idEstado = idEstado;
+        this.estadoDescripcion = estadoDescripcion;
+        this.modelo = modelo;
+        this.placaInventario = placaInventario;
+        this.fechaCompra = fechaCompra;
+        this.foto = foto;
+    }            
 
     public Equipo(int idEquipo, int idCategoria, String descripcion, int idEstado, String modelo, String placaInventario, String fechaCompra, String foto) {
         this.idEquipo = idEquipo;
@@ -47,6 +65,15 @@ public class Equipo {
         this.fechaCompra = fechaCompra;
         this.foto = foto;
     }
+
+    public Equipo(int idEquipo, String descripcion, String placaInventario, String fechaCompra) {
+        this.idEquipo = idEquipo;
+        this.descripcion = descripcion;
+        this.placaInventario = placaInventario;
+        this.fechaCompra = fechaCompra;
+    }
+    
+    
 
     public Equipo(int idEquipo) {
         this.idEquipo = idEquipo;
@@ -115,20 +142,59 @@ public class Equipo {
     public void setFoto(String foto) {
         this.foto = foto;
     }
-    
-    public String insert(){
-        Conexion conn = new Conexion();
-        EquiposDAO equipo = new EquiposDAO(this.idCategoria,this.descripcion, this.idEstado,
-                        this.modelo, this.placaInventario, this.fechaCompra, this.foto);
-        return conn.executeUpdate(equipo.insert());
+
+    public String getNombreCategoria() {
+        return nombreCategoria;
+    }
+
+    public void setNombreCategoria(String nombreCategoria) {
+        this.nombreCategoria = nombreCategoria;
+    }
+
+    public String getEstadoDescripcion() {
+        return estadoDescripcion;
+    }
+
+    public void setEstadoDescripcion(String estadoDescripcion) {
+        this.estadoDescripcion = estadoDescripcion;
     }
     
-    public String update(){
+    
+    
+    public Equipo save() {
         Conexion conn = new Conexion();
         EquiposDAO equipo = new EquiposDAO(this.idEquipo, this.idCategoria,this.descripcion, this.idEstado,
                         this.modelo, this.placaInventario, this.fechaCompra, this.foto);
-        return conn.executeUpdate(equipo.update());
+        ResultSet rs = conn.executeQuery(equipo.save());
+        Equipo currentEquipment = null;
+        
+        try {
+            while ( rs.next() ) {
+                currentEquipment = new Equipo(rs.getInt("idequipo"), rs.getInt("idcategoria"), 
+                        rs.getString("nombre_categoria"), rs.getString("descripcion"), rs.getInt("idestado_equipo"),
+                         rs.getString("estado_descipcion"), rs.getString("modelo"), rs.getString("placa_inventario"), 
+                        rs.getString("fecha_compra"), rs.getString("foto"));
+            }
+        } catch (SQLException e) {
+//            Logger.getLogger(Writer.class.getName()).log(Level., null, e);
+            e.printStackTrace();
+        }
+        return currentEquipment;
     }
+    
+//    public String insert(){
+//        Conexion conn = new Conexion();
+//        EquiposDAO equipo = new EquiposDAO(this.idCategoria,this.descripcion, this.idEstado,
+//                        this.modelo, this.placaInventario, this.fechaCompra, this.foto);
+//        return conn.executeUpdate(equipo.insert());
+//    }
+//    
+//    public String update(){
+//        Conexion conn = new Conexion();
+//        EquiposDAO equipo = new EquiposDAO(this.idEquipo, this.idCategoria,this.descripcion, this.idEstado,
+//                        this.modelo, this.placaInventario, this.fechaCompra, this.foto);
+//        return conn.executeUpdate(equipo.update());
+//    }
     
     public String delete(){
         Conexion conn = new Conexion();
@@ -136,18 +202,20 @@ public class Equipo {
         return conn.executeUpdate(equipo.delete());
     }
    
-    public ArrayList<Equipo> search(SearchTypesDAO st, String filter) {
+    public ArrayList<Equipo> search(String filter) {
         ArrayList<Equipo> data = new ArrayList<>();
         Conexion conn = new Conexion();
         EquiposDAO equipo = new EquiposDAO();
-        ResultSet rs = conn.executeQuery(equipo.search(st, filter));
+        ResultSet rs = conn.executeQuery(equipo.search( filter ));
         
         try {
             while ( rs.next() ) {
-                Equipo currentEquipo = new Equipo(rs.getInt("idequipo"), rs.getInt("idcategoria"), 
-                        rs.getString("descripcion"), rs.getInt("idestado_equipo"), rs.getString("modelo"),
-                        rs.getString("placa_inventario"), rs.getString("fecha_compra"), rs.getString("foto"));
-                data.add(currentEquipo);
+                Equipo currentEquipment = new Equipo(rs.getInt("idequipo"), rs.getInt("idcategoria"), 
+                        rs.getString("nombre_categoria"), rs.getString("descripcion"), rs.getInt("idestado_equipo"),
+                         rs.getString("estado_descipcion"), rs.getString("modelo"), rs.getString("placa_inventario"), 
+                        rs.getString("fecha_compra"), rs.getString("foto"));
+                
+                data.add(currentEquipment);
             }
         } catch (SQLException e) {
 //            Logger.getLogger(Writer.class.getName()).log(Level., null, e);
@@ -156,18 +224,19 @@ public class Equipo {
         return data;
     }
     
-    public ArrayList<Equipo> list() {
+    public ArrayList<Equipo> list(int skip, int sort) {
         ArrayList<Equipo> data = new ArrayList<>();
         Conexion conn = new Conexion();
         EquiposDAO equipo = new EquiposDAO();
-        ResultSet rs = conn.executeQuery(equipo.list());
+        ResultSet rs = conn.executeQuery(equipo.list(skip, sort));
         
         try {
             while ( rs.next() ) {
-                Equipo currentEquipo = new Equipo(rs.getInt("idequipo"), rs.getInt("idcategoria"), 
-                        rs.getString("descripcion"), rs.getInt("idestado_equipo"), rs.getString("modelo"),
-                        rs.getString("placa_inventario"), rs.getString("fecha_compra"), rs.getString("foto"));
-                data.add(currentEquipo);
+                Equipo currentEquipment = new Equipo(rs.getInt("idequipo"), rs.getInt("idcategoria"), 
+                        rs.getString("nombre_categoria"), rs.getString("descripcion"), rs.getInt("idestado_equipo"),
+                         rs.getString("estado_descipcion"), rs.getString("modelo"), rs.getString("placa_inventario"), 
+                        rs.getString("fecha_compra"), rs.getString("foto"));
+                data.add(currentEquipment);
             }
         } catch (SQLException e) {
 //            Logger.getLogger(Writer.class.getName()).log(Level., null, e);

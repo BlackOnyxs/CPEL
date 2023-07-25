@@ -18,6 +18,11 @@ public class EstadoEquipo {
     private int idEstado;
     private String descripcion;
 
+    public EstadoEquipo() {
+    }
+    
+    
+
     public EstadoEquipo(int idEstado, String descripcion) {
         this.idEstado = idEstado;
         this.descripcion = descripcion;
@@ -32,22 +37,24 @@ public class EstadoEquipo {
         this.descripcion = descripcion;
     }
 
-    public int getIdCarrera() {
+    public int getIdEstado() {
         return idEstado;
     }
 
-    public void setIdCarrera(int idEstado) {
+    public void setIdEstado(int idEstado) {
         this.idEstado = idEstado;
     }
 
-    public String getNombreCarrera() {
+    public String getDescripcion() {
         return descripcion;
     }
 
-    public void setNombreCarrera(String descripcion) {
+    public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
     
+    
+
     public String insert(){
         Conexion conn = new Conexion();
         EstadoEquipoDAO equipoEstado = new EstadoEquipoDAO(this.descripcion);

@@ -18,35 +18,38 @@ public class CategoriaEquipo {
     private int idCategoria;
     private String nombreCategoria;
 
-    public CategoriaEquipo(int idCategoria, String descripcion) {
+    public CategoriaEquipo() {
+    }
+
+    public CategoriaEquipo(int idCategoria, String nombreCategoria) {
         this.idCategoria = idCategoria;
-        this.nombreCategoria = descripcion;
+        this.nombreCategoria = nombreCategoria;
     }
 
     public CategoriaEquipo(int idCategoria) {
         this.idCategoria = idCategoria;
     }
-    
 
-    public CategoriaEquipo(String descripcion) {
-        this.nombreCategoria = descripcion;
+    public CategoriaEquipo(String nombreCategoria) {
+        this.nombreCategoria = nombreCategoria;
     }
 
-    public int getIdCarrera() {
+    public int getIdCategoria() {
         return idCategoria;
     }
 
-    public void setIdCarrera(int idCategoria) {
+    public void setIdCategoria(int idCategoria) {
         this.idCategoria = idCategoria;
     }
 
-    public String getNombreCarrera() {
+    public String getNombreCategoria() {
         return nombreCategoria;
     }
 
-    public void setNombreCarrera(String descripcion) {
-        this.nombreCategoria = descripcion;
-    }
+    public void setNombreCategoria(String nombreCategoria) {
+        this.nombreCategoria = nombreCategoria;
+    }        
+    
     
     public String insert(){
         Conexion conn = new Conexion();
@@ -110,8 +113,7 @@ public class CategoriaEquipo {
         
         try {
             while ( rs.next() ) {
-                System.out.println("Si");
-                CategoriaEquipo currentCategoria = new CategoriaEquipo(rs.getInt("idcategoria"), rs.getString("nombre_categoria"));
+                CategoriaEquipo currentCategoria = new CategoriaEquipo(rs.getInt("idcategoria"), rs.getString("nombre_categoria"));     
                 data.add(currentCategoria);
             }
         } catch (SQLException e) {

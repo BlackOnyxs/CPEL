@@ -48,6 +48,7 @@ public class Conexion {
     public void closeConnection() {
         try {
             this.myConnection.close();
+            System.out.println("Nos desconectamos.");
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import modelo.Conexion;
-import modelo.SearchTypesDAO;
 import modelo.UsuarioDAO;
 
 /**
@@ -50,9 +49,7 @@ public class Usuario {
         this.careerName = careerName;
         this.tipoUsuario = tipoUsuario;
     }
-
-    
-    
+   
 
     public Usuario(String cedula) {
         this.cedula = cedula;
