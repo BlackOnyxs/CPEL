@@ -47,42 +47,32 @@ public class Carrera {
 
     public void setNombreCarrera(String nombreCarrera) {
         this.nombreCarrera = nombreCarrera;
-    }
+    }   
     
-    public String insert(){
+     public Carrera save(){
         Conexion conn = new Conexion();
-        CarreraDAO career = new CarreraDAO(this.nombreCarrera);
-        return conn.executeUpdate(career.insert());
-    }
-    
-     public String update(){
-        Conexion conn = new Conexion();
-        CarreraDAO career = new CarreraDAO(this.idCarrera, this.nombreCarrera);
-        return conn.executeUpdate(career.update());
+        CarreraDAO carrerDao = new CarreraDAO(this.idCarrera, this.nombreCarrera);
+        
+        ResultSet rs = conn.executeQuery(carrerDao.save());
+        Carrera currentCarrer = null;
+        try{
+         while ( rs.next() ) {
+                currentCarrer = new Carrera(rs.getInt("idCarrera"), rs.getString("nombre_carrera"));
+               
+            }
+          } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return currentCarrer;
     }
      
-    public boolean get () {
-        Conexion myConnection = new Conexion();
-        CarreraDAO career = new CarreraDAO(this.idCarrera);
-        
-        ResultSet rs = myConnection.executeQuery(career.get());
-        try {
-            if ( rs.next() ) {
-                this.nombreCarrera = rs.getString("nombre_carrera");
-                return true;
-            }else return false;
-        }catch( SQLException e ) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-    public ArrayList<Carrera> search(SearchTypesDAO st, String value) {
+    public ArrayList<Carrera> search(String value) {
         ArrayList<Carrera> data = new ArrayList<>();
         
         Conexion myConnection = new Conexion();
         CarreraDAO carrerDao = new CarreraDAO();
         
-        ResultSet rs = myConnection.executeQuery(carrerDao.search(st, value));
+        ResultSet rs = myConnection.executeQuery(carrerDao.search(value));
         
         try {
             while ( rs.next() ) {
@@ -101,13 +91,13 @@ public class Carrera {
         return conn.executeUpdate(career.delete());
     }
     
-    public ArrayList<Carrera> list() {
+    public ArrayList<Carrera> list(int skip, int sort) {
         ArrayList<Carrera> data = new ArrayList<>();
         
         Conexion myConnection = new Conexion();
-        CarreraDAO writerDao = new CarreraDAO();
+        CarreraDAO careerDao = new CarreraDAO();
         
-        ResultSet rs = myConnection.executeQuery(writerDao.list());
+        ResultSet rs = myConnection.executeQuery(careerDao.list( skip, sort ));
         
         try {
             while ( rs.next() ) {

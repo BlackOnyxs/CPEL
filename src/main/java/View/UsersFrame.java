@@ -72,7 +72,7 @@ public class UsersFrame extends javax.swing.JInternalFrame {
     
     public void loadCarrerFromDB() {
         currentCareer = new Carrera();
-        careers = currentCareer.list();
+        careers = currentCareer.list(0, 0);
         
          if ( !careers.isEmpty() ) {
              careers.forEach( career -> {
@@ -95,7 +95,8 @@ public class UsersFrame extends javax.swing.JInternalFrame {
         if ( !users.isEmpty() ) {
             users.forEach( user -> {
                 Object[] rowData = { user.getCedula(), (user.getPrimerNombre() + " " + user.getPrimerApellido() ),
-                    user.getTelefono(), user.getCorreo(), user.getTipoUsuario(), user.getCareerName()};
+                    user.getTelefono(), user.getCorreo(), (user.getTipoUsuario() != null ? user.getTipoUsuario() : user.getIdTipoUsuario() ),
+                    (user.getCareerName()!= null ? user.getCareerName() : user.getIdCarrera())};
                 usersTableModel.addRow(rowData);
             });
             usersTable.setModel(usersTableModel);

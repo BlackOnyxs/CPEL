@@ -4,6 +4,7 @@
  */
 package utils;
 
+import Logica.Carrera;
 import Logica.Equipo;
 import Logica.Operador;
 import Logica.Usuario;
@@ -197,4 +198,57 @@ public class FileUtils {
         }
     }
     
+    public static ArrayList<Carrera> loadCareersFromFile(Component component) throws IOException {
+        ArrayList<Carrera> careers = new ArrayList<>();
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos CSV", "csv");
+        fileChooser.setFileFilter(filter);
+
+        int result = fileChooser.showOpenDialog(component);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    String[] data = line.split(",");
+                    if (data.length == 2) {
+                        String id = data[0];
+                        String nombre = data[1];
+                        Carrera newObject = new Carrera(Integer.parseInt(id), nombre);
+                        careers.add(newObject);
+                    }
+
+                }
+                br.close();
+            } catch (IOException ex) {
+                throw ex;
+            }
+        }
+        return careers;
+    }
+    
+    public static void saveCareersToFile(ArrayList<Carrera> careers, Component component) throws IOException {
+        JFileChooser fileChooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos CSV", "csv");
+        fileChooser.setFileFilter(filter);
+
+        int result = fileChooser.showSaveDialog(component);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+                for (Carrera career : careers) {
+                    String line = career.getIdCarrera()+ "," + career.getNombreCarrera();
+                    bw.write(line);
+                    bw.newLine();
+                }
+                bw.close();
+
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                throw ex;
+            }
+        }
+    }
 }

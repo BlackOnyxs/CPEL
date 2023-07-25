@@ -30,41 +30,21 @@ public class CarreraDAO {
     }
     
     
-    
-    public String insert() {
-        return "insert into carreras(idcarrera, nombre_carrera)values(null,'"+ this.nombreCarrera+"');";
+    public String save() {
+        return String.format("call CarrerSave(%d, '%s')", this.idCarrera, this.nombreCarrera);
     }
     
-    public String update() {
-        return "UPDATE carreras set nombre_carrera = '"+ this.nombreCarrera+
-                "' where idcarrera = "+ this.idCarrera+";";
-    }
-    
-    public String search( SearchTypesDAO filter, String value ) {
-        String sqlStatement =  "";
-        
-        switch( filter ) {
-            case ID:
-                sqlStatement = "select * from carreras where idcarrera = "+value+";";
-               break;
-            case NAME:
-                sqlStatement = "select * from carreras where nombre_carrera like '"+value+"';";
-               break;
-            default:
-                return "Not implement";
-        }
-        return sqlStatement;
-    }
-    
-     public String get() {
-        return "SELECT * FROM carreras where idcarrera = "+this.idCarrera+";";
+   
+    public String search( String value ) {
+        return String.format("call CareerSearch('%s')", value);
     }
     
      public String delete() {
         return "DELETE FROM carreras WHERE idcarrera = "+ this.idCarrera+";";
     }
     
-    public String list() {
-        return "SELECT * FROM carreras";
+    public String list(int skip, int sort) {
+        return String.format("SELECT * FROM carreras order by nombre_carrera %s limit 10 offset %d;",
+                (sort == 0 ? "asc" : "desc"), skip);
     }
 }
