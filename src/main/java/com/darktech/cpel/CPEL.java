@@ -18,6 +18,6 @@ public class CPEL {
         System.out.println("Insertando un escritor en la tabla");
         
         Prestamo p = new Prestamo(5, "2023-07-20", "2-2-2",1, "Cum-2");
-        System.out.print(p.update());
+//        System.out.print(p.update());
     }
 }

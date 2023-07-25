@@ -62,54 +62,102 @@ public class PrestamoDAO {
         this.cedulaOperadorPrestamo = cedulaOperadorPrestamo;
     }
     
-    
-    
-
     public PrestamoDAO(int idPrestamo) {
         this.idPrestamo = idPrestamo;
     }
 
-    
-    
-    public String insert(){
-        return String.format("call EquipmentLoanCreate('%s', %s, '%s', '%s')", this.fechaSolicitud, this.idEquipo, this.cedulaUsuario, this.cedulaOperadorPrestamo);
+    public int getIdPrestamo() {
+        return idPrestamo;
+    }
+
+    public void setIdPrestamo(int idPrestamo) {
+        this.idPrestamo = idPrestamo;
+    }
+
+    public String getFechaSolicitud() {
+        return fechaSolicitud;
+    }
+
+    public void setFechaSolicitud(String fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
+    }
+
+    public int getIdEquipo() {
+        return idEquipo;
+    }
+
+    public void setIdEquipo(int idEquipo) {
+        this.idEquipo = idEquipo;
+    }
+
+    public String getCedulaUsuario() {
+        return cedulaUsuario;
+    }
+
+    public void setCedulaUsuario(String cedulaUsuario) {
+        this.cedulaUsuario = cedulaUsuario;
+    }
+
+    public String getCedulaOperadorPrestamo() {
+        return cedulaOperadorPrestamo;
+    }
+
+    public void setCedulaOperadorPrestamo(String cedulaOperadorPrestamo) {
+        this.cedulaOperadorPrestamo = cedulaOperadorPrestamo;
+    }
+
+    public String getFechaDevolicion() {
+        return fechaDevolicion;
+    }
+
+    public void setFechaDevolicion(String fechaDevolicion) {
+        this.fechaDevolicion = fechaDevolicion;
+    }
+
+    public String getCedulaOperadorDevolucion() {
+        return cedulaOperadorDevolucion;
+    }
+
+    public void setCedulaOperadorDevolucion(String cedulaOperadorDevolucion) {
+        this.cedulaOperadorDevolucion = cedulaOperadorDevolucion;
+    }
+
+    public int getIdEstado() {
+        return idEstado;
+    }
+
+    public void setIdEstado(int idEstado) {
+        this.idEstado = idEstado;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
     
-    public String update() {
-         System.out.println(this.idPrestamo);
-        return String.format("call EquipmentLoanUpdate(%s, '%s', '%s', %s, '%s')", this.idPrestamo, this.fechaDevolicion, this.cedulaOperadorDevolucion, this.idEstado, this.observacion);
-        /*
-        "update prestamos set fecha_solicitud = '"+this.fechaSolicitud+"', idequipo = "+this.idEquipo+", cedula_usuario = '"+this.cedulaUsuario+"', "
-                +"cedula_operador_prestamo = '"+this.cedulaOperadorPrestamo+"', fecha_devolucion = '"+this.fechaDevolicion+"', "
-                +"cedula_operador_devolucion = '"+this.cedulaOperadorDevolucion+"', idestado_devolucion = "+this.idEstado
-                +" , observacion = '"+this.observacion+"' where idprestamo = "+this.idPrestamo;
-        */
+    
+
+   
+    public String save(){
+        return String.format("call EquipmentLoanSave(%d,'%s', %d, '%s', '%s', '%s', '%s', %d, '%s')", 
+                this.idPrestamo, this.fechaSolicitud, this.idEquipo, this.cedulaUsuario, 
+                this.cedulaOperadorPrestamo, this.fechaDevolicion, this.cedulaOperadorDevolucion,
+                this.idEstado, this.observacion);
     }
     
-     public String search( SearchTypesDAO filter, String value ) {
-        String sqlStatement =  "";
-        
-         switch( filter ) {
-            case ID:
-                sqlStatement = String.format("call EquipmentLoanById(%s)", value);
-               break;
-            case STATE:
-                sqlStatement = String.format("call EquipmentLoanByState(%s)", value);
-               break;
-            case DATE:
-                sqlStatement = String.format("call EquipmentLoanByDate(%s)", value);
-               break;
-            default:
-                return "Not implement";
-        }
-        return sqlStatement;
+    
+     public String search( String value ) {
+        return String.format("call EquipmentLoanSearch('%s')", value);
     }
      
-    public String list( int skip ) {
-        return String.format("call EquipmentLoanList(%d)", skip);
+    public String list( int skip, int sort ) {
+        return String.format( sort == 0 ? "call EquipmentLoanListASC(%d)" : "call EquipmentLoanDESC(%d)", skip);
     }
     
     public String delete() {
-        return "delete prestamos where idprestamo = "+this.idPrestamo;
+        return "delete from prestamos where idprestamo = "+this.idPrestamo+";";
     }
 }
