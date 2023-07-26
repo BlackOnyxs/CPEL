@@ -8,4 +8,4 @@ Esta es una aplicación para gestionar el préstamo de equipo en el laboratorio 
  - Hacer build y correr la app.
 
  ## Diagrama entidad relación
- ![Diagrama](https://asset.cloudinary.com/dyjsa002n/fa5d6c64cfddcc5471cf0dbe4451c475)
+![Diagrama](https://github.com/BlackOnyxs/CPEL/assets/44146655/73e51093-c0f0-45a5-a09c-b92fe0897b29)
