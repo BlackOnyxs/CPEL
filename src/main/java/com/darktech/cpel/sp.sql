@@ -452,7 +452,7 @@ end$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `UserCreateOrUpdate`(IN `idUser` VARCHAR(16), IN `firstName` VARCHAR(25), IN `lastname` VARCHAR(25), IN `phone` VARCHAR(25), IN `email` VARCHAR(25), IN `idCareer` INT, IN `userType` INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UserCreateOrUpdate`(IN `idUser` VARCHAR(16), IN `firstName` VARCHAR(25), IN `lastname` VARCHAR(25), IN `phone` VARCHAR(25), IN `email` VARCHAR(50), IN `idCareer` INT, IN `userType` INT)
 BEGIN
     IF EXISTS
         (
